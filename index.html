@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAGSNES</title>
+    <style>
+        :root {
+            --dynamic-color-primary: #6200EE;
+            --dynamic-color-secondary: #03DAC6;
+            --dynamic-color-background: #F5F5F5;
+            --dynamic-color-surface: #FFFFFF;
+            --dynamic-color-on-primary: #FFFFFF;
+            --dynamic-color-on-secondary: #000000;
+            --dynamic-color-on-background: #000000;
+            --dynamic-color-on-surface: #000000;
+            --dynamic-color-danger: #FF0000;
+        }
+
+        [data-theme="dark"] {
+            --dynamic-color-primary: #BB86FC;
+            --dynamic-color-secondary: #03DAC6;
+            --dynamic-color-background: #121212;
+            --dynamic-color-surface: #1E1E1E;
+            --dynamic-color-on-primary: #000000;
+            --dynamic-color-on-secondary: #000000;
+            --dynamic-color-on-background: #FFFFFF;
+            --dynamic-color-on-surface: #FFFFFF;
+            --dynamic-color-danger: #CF6679;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 14px;
+            background-color: var(--dynamic-color-background);
+            color: var(--dynamic-color-on-background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 500px;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: normal;
+        }
+
+        h2 span {
+            font-family: 'Arial', sans-serif;
+            font-style: normal;
+            font-weight: normal;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: var(--dynamic-color-primary);
+            font-size: 1em;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        nav span.separator {
+            margin: 0 5px;
+            color: var(--dynamic-color-on-background);
+        }
+
+        .button {
+            background-color: var(--dynamic-color-secondary);
+            color: var(--dynamic-color-on-secondary);
+            border: none;
+            border-radius: 16px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>( ･∀･)ﾉ゛</h1>
+        <h2>👋我是 <span>LAGSNES✨</span></h2>
+        <nav>
+            <a href="https://blog.qaq.life" target="_blank">Blog</a>
+            <span class="separator">-</span>
+            <a href="https://lagsnes.t.me" target="_blank">Telegram</a>
+            <span class="separator">-</span>
+            <a href="https://github.com/LAGSNESQwQ" target="_blank">GitHub</a>
+            <span class="separator">-</span>
+            <a href="/cdn-cgi/l/email-protection#a2d1ccc7d1d3d5d3e2c5cfc3cbce8cc1cdcf">Gmail</a>
+            <span class="separator">-</span>
+            <a href="https://stat.lagsn.es">Server Status</a>
+            <span class="separator">-</span>
+            <a href="https://proxy.qaq.life/default/https/ipv6.google.com">SiteProxy</a>
+            <span class="separator">-</span>
+            <a href="https://zirconium.app">ZirconiumSearch</a>
+            <span class="separator">-</span>
+            <a href="https://blog.qaq.life/about" target="_blank">About Me</a>
+        </nav>
+        <button class="button" onclick="toggleTheme()">Dark Mode</button>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.querySelector('.button').textContent = 'Light Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.button');
+            const isDarkMode = body.getAttribute('data-theme') === 'dark';
+
+            if (isDarkMode) {
+                body.removeAttribute('data-theme');
+                button.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light'); // 保存为浅色模式
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                button.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark'); // 保存为深色模式
+            }
+        }
+
+        initializeTheme();
+    </script>
+</body>
+</html>
