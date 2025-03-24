@@ -3,158 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAGSNES</title>
+    <title>LAGSNES - 个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        /* 设计系统 - 变量 */
         :root {
-            --dynamic-color-primary: #6200EE;
-            --dynamic-color-secondary: #03DAC6;
-            --dynamic-color-background: #F5F5F5;
-            --dynamic-color-surface: #FFFFFF;
-            --dynamic-color-on-primary: #FFFFFF;
-            --dynamic-color-on-secondary: #000000;
-            --dynamic-color-on-background: #000000;
-            --dynamic-color-on-surface: #000000;
-            --dynamic-color-danger: #FF0000;
+            /* 主色调 */
+            --primary: #7267EF;
+            --primary-dark: #6151E5;
+            --secondary: #07CABD;
+            --secondary-dark: #06B0A5;
+            
+            /* 明亮模式 */
+            --background: #F8F9FC;
+            --surface: #FFFFFF;
+            --surface-hover: #F1F3FA;
+            --text-primary: #2D3748;
+            --text-secondary: #4A5568;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: rgba(17, 12, 46, 0.08);
         }
-
+        
         [data-theme="dark"] {
-            --dynamic-color-primary: #BB86FC;
-            --dynamic-color-secondary: #03DAC6;
-            --dynamic-color-background: #121212;
-            --dynamic-color-surface: #1E1E1E;
-            --dynamic-color-on-primary: #000000;
-            --dynamic-color-on-secondary: #000000;
-            --dynamic-color-on-background: #FFFFFF;
-            --dynamic-color-on-surface: #FFFFFF;
-            --dynamic-color-danger: #CF6679;
+            /* 暗黑模式 */
+            --background: #131525;
+            --surface: #1C1E33;
+            --surface-hover: #252842;
+            --text-primary: #E2E8F0;
+            --text-secondary: #A0AEC0;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.25);
         }
-
-        body {
+        
+        /* 全局样式 */
+        * {
             margin: 0;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 14px;
-            background-color: var(--dynamic-color-background);
-            color: var(--dynamic-color-on-background);
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
+            line-height: 1.5;
         }
-
+        
         .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .card {
+            background-color: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        /* 标题样式 */
+        .header {
+            margin-bottom: 30px;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            max-width: 500px;
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
+            gap: 8px;
         }
-
+        
+        .emoji {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        
+        /* 颜文字的轻微跳动动画 */
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
         h1 {
-            margin: 0;
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
         }
-
+        
         h2 {
-            margin: 0;
-            font-size: 1.5em;
-            font-weight: normal;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
         }
-
-        h2 span {
-            font-family: 'Arial', sans-serif;
-            font-style: normal;
-            font-weight: normal;
+        
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
         }
-
-        nav {
-            margin-top: 10px;
+        
+        /* 导航菜单 */
+        .nav-container {
+            margin: 25px 0;
         }
-
-        nav a {
-            margin: 0 5px;
+        
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .nav-item {
             text-decoration: none;
-            color: var(--dynamic-color-primary);
-            font-size: 1em;
+            color: var(--text-primary);
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.25s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
-
-        nav a:hover {
-            text-decoration: underline;
+        
+        .nav-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow);
+            background-color: var(--surface-hover);
+            color: var(--primary);
         }
-
-        nav span.separator {
-            margin: 0 5px;
-            color: var(--dynamic-color-on-background);
+        
+        .nav-item i {
+            font-size: 18px;
+            color: var(--primary);
         }
-
-        .button {
-            background-color: var(--dynamic-color-secondary);
-            color: var(--dynamic-color-on-secondary);
+        
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
             border: none;
-            border-radius: 16px;
-            padding: 8px 16px;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 20px;
+            background-color: var(--surface-hover);
+            transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
-
-        .button:hover {
-            opacity: 0.8;
+        
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            background-color: var(--surface-hover);
+            color: var(--primary);
+        }
+        
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 40px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 25px;
+            }
+            
+            .emoji {
+                font-size: 3rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+                border-radius: 16px;
+            }
+            
+            .emoji {
+                font-size: 2.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .nav-item {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>( ･∀･)ﾉ゛</h1>
-        <h2>👋我是 <span>LAGSNES✨</span></h2>
-        <nav>
-            <a href="https://blog.lagsn.es" target="_blank">Blog</a>
-            <span class="separator">-</span>
-            <a href="https://breathai.top/" target="_blank">AI</a>
-            <span class="separator">-</span>
-            <a href="https://lagsnes.t.me" target="_blank">Telegram</a>
-            <span class="separator">-</span>
-            <a href="https://github.com/LAGSNESOwO" target="_blank">GitHub</a>
-            <span class="separator">-</span>
-            <a href="/cdn-cgi/l/email-protection#a2d1ccc7d1d3d5d3e2c5cfc3cbce8cc1cdcf">Gmail</a>
-            <span class="separator">-</span>
-            <a href="https://monitor.lagsn.es">Server Status</a>
-            <span class="separator">-</span>
-            <a href="https://zirconium.app">ZirconiumSearch</a>
-            <span class="separator">-</span>
-            <a href="https://blog.lagsn.es/about" target="_blank">About Me</a>
-        </nav>
-        <button class="button" onclick="toggleTheme()">Dark Mode</button>
+        <div class="card">
+            <button class="theme-toggle" aria-label="切换主题" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            
+            <div class="header">
+                <span class="emoji">( ･∀･)ﾉ゛</span>
+                <h1>你好，世界！</h1>
+                <h2>👋 我是 <span class="highlight">LAGSNES✨</span></h2>
+                <p>欢迎来到我的个人空间，这里汇集了我的项目和兴趣爱好。</p>
+            </div>
+            
+            <div class="nav-container">
+                <div class="nav">
+                    <a href="https://blog.lagsn.es" target="_blank" class="nav-item">
+                        <i class="fas fa-pen-fancy"></i>博客
+                    </a>
+                    <a href="https://lagsnes.t.me" target="_blank" class="nav-item">
+                        <i class="fab fa-telegram"></i>Telegram
+                    </a>
+                    <a href="https://github.com/LAGSNESOwO" target="_blank" class="nav-item">
+                        <i class="fab fa-github"></i>GitHub
+                    </a>
+                    <a href="mailto:email@lagsn.es" class="nav-item">
+                        <i class="fas fa-envelope"></i>邮箱
+                    </a>
+                    <a href="https://monitor.lagsn.es" target="_blank" class="nav-item">
+                        <i class="fas fa-server"></i>服务器状态
+                    </a>
+                    <a href="https://zirconium.app" target="_blank" class="nav-item">
+                        <i class="fas fa-search"></i>ZirconiumSearch
+                    </a>
+                    <a href="https://breathai.top/" target="_blank" class="nav-item">
+                        <i class="fas fa-robot"></i>灵息 AI
+                    </a>
+                    <a href="https://blog.lagsn.es/about" target="_blank" class="nav-item">
+                        <i class="fas fa-user"></i>关于我
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>© 2023 LAGSNES. 保留所有权利。</p>
+            </div>
+        </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
+        // 初始化主题
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark' || ((!savedTheme) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.body.setAttribute('data-theme', 'dark');
-                document.querySelector('.button').textContent = 'Light Mode';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
             }
         }
-
+        
+        // 切换主题
         function toggleTheme() {
             const body = document.body;
-            const button = document.querySelector('.button');
+            const themeIcon = document.getElementById('theme-icon');
             const isDarkMode = body.getAttribute('data-theme') === 'dark';
-
+            
             if (isDarkMode) {
                 body.removeAttribute('data-theme');
-                button.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light'); // 保存为浅色模式
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                button.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark'); // 保存为深色模式
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
             }
         }
-
-        initializeTheme();
+        
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            
+            // 为颜文字添加悬停效果
+            const emoji = document.querySelector('.emoji');
+            
+            emoji.addEventListener('mouseover', () => {
+                // 鼠标悬停时添加轻微跳动动画
+                emoji.style.animation = 'gentle-bounce 0.5s ease infinite';
+            });
+            
+            emoji.addEventListener('mouseout', () => {
+                // 鼠标离开时停止动画
+                emoji.style.animation = 'none';
+            });
+        });
     </script>
 </body>
 </html>
