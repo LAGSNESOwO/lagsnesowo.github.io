@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LAGSNES - 个人主页</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 设计系统 - 变量 */
         :root {
@@ -20,10 +23,12 @@
             --background: #F8F9FC;
             --surface: #FFFFFF;
             --surface-hover: #F1F3FA;
+            --card-secondary: rgba(255, 255, 255, 0.7);
             --text-primary: #2D3748;
             --text-secondary: #4A5568;
             --border: rgba(0, 0, 0, 0.08);
             --shadow: rgba(17, 12, 46, 0.08);
+            --shadow-strong: rgba(17, 12, 46, 0.15);
         }
         
         [data-theme="dark"] {
@@ -31,10 +36,12 @@
             --background: #131525;
             --surface: #1C1E33;
             --surface-hover: #252842;
+            --card-secondary: rgba(40, 42, 70, 0.7);
             --text-primary: #E2E8F0;
             --text-secondary: #A0AEC0;
             --border: rgba(255, 255, 255, 0.1);
             --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-strong: rgba(0, 0, 0, 0.35);
         }
         
         /* 全局样式 */
@@ -42,47 +49,58 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--background);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            line-height: 1.5;
+            padding: 40px 20px;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 25% 10%, rgba(114, 103, 239, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 75% 75%, rgba(7, 202, 189, 0.05) 0%, transparent 20%);
+            background-attachment: fixed;
+            letter-spacing: -0.02em;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
+            perspective: 1000px;
+        }
+        
+        /* 页面加载动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* 顶部彩条动画 */
         @keyframes gradientBorder {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .card {
             background-color: var(--surface);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 10px 30px var(--shadow);
+            border-radius: 28px;
+            padding: 50px;
+            box-shadow: 0 15px 40px var(--shadow),
+                        0 5px 15px var(--shadow);
             position: relative;
             overflow: hidden;
             margin-bottom: 20px;
+            transform-style: preserve-3d;
+            animation: fadeIn 0.8s ease forwards;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
         }
         
         .card::before {
@@ -91,7 +109,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: linear-gradient(90deg, 
                 var(--primary), 
                 var(--secondary), 
@@ -100,54 +118,79 @@
                 var(--primary));
             background-size: 300% 100%;
             animation: gradientBorder 6s linear infinite;
+            z-index: 1;
+        }
+        
+        /* 卡片装饰 */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 60px;
+            right: -120px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+            opacity: 0.05;
+            z-index: 0;
         }
         
         /* 文字渐变动画 */
         @keyframes textGradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         /* 标题样式 */
         .header {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
         }
         
         .emoji {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
+            font-size: 4rem;
+            margin-bottom: 15px;
             display: inline-block;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
         }
         
         /* 颜文字的轻微跳动动画 */
         @keyframes gentle-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
         }
         
         h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 5px;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
         h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
+            font-size: 1.7rem;
+            font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-width: 85%;
+            margin-top: 5px;
         }
         
         .highlight {
@@ -164,19 +207,21 @@
             background-clip: text;
             color: transparent;
             animation: textGradient 6s linear infinite;
+            padding: 0 4px;
         }
         
         /* 导航菜单 */
         .nav-container {
-            margin: 25px 0;
+            margin: 35px 0;
+            position: relative;
+            z-index: 2;
         }
         
         .nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: flex-start;
-            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
         }
         
         .nav-item {
@@ -184,67 +229,178 @@
             color: var(--text-primary);
             background-color: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 12px 20px;
-            font-size: 15px;
+            border-radius: 18px;
+            padding: 18px 20px;
+            font-size: 16px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px var(--shadow);
-            transition: all 0.25s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            gap: 12px;
+            box-shadow: 0 8px 20px var(--shadow);
+            transition: all 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            height: 100%;
+        }
+        
+        .nav-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(114, 103, 239, 0.1), 
+                rgba(7, 202, 189, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+            border-radius: 18px;
         }
         
         .nav-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px var(--shadow);
-            background-color: var(--surface-hover);
-            color: var(--primary);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 30px var(--shadow-strong);
+            border-color: rgba(114, 103, 239, 0.3);
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
         }
         
         .nav-item i {
-            font-size: 18px;
-            color: var(--primary);
+            font-size: 22px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-item:hover i {
+            transform: scale(1.2) rotate(5deg);
         }
         
         /* 主题切换按钮 */
         .theme-toggle {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             background: transparent;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             color: var(--text-primary);
-            font-size: 20px;
-            background-color: var(--surface-hover);
-            transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            font-size: 22px;
+            background-color: var(--card-secondary);
+            transition: all 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px var(--shadow);
+            border: 1px solid var(--border);
+            z-index: 10;
         }
         
         .theme-toggle:hover {
-            transform: rotate(15deg);
-            background-color: var(--surface-hover);
-            color: var(--primary);
+            transform: rotate(30deg) scale(1.1);
+            box-shadow: 0 15px 30px var(--shadow-strong);
+            background: linear-gradient(135deg, 
+                rgba(114, 103, 239, 0.2), 
+                rgba(7, 202, 189, 0.2));
         }
         
         /* 底部信息 */
         .footer {
             text-align: center;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text-secondary);
             margin-top: 40px;
+            position: relative;
+            z-index: 2;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer p {
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer p:hover {
+            opacity: 1;
+        }
+        
+        /* 装饰性元素 */
+        .decoration {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .decoration-1 {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent1) 0%, var(--accent2) 100%);
+            opacity: 0.03;
+            top: 30%;
+            left: 5%;
+            filter: blur(20px);
+        }
+        
+        .decoration-2 {
+            width: 150px;
+            height: 150px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background: linear-gradient(45deg, var(--primary) 0%, var(--secondary) 100%);
+            opacity: 0.05;
+            bottom: 10%;
+            right: 5%;
+            filter: blur(25px);
         }
         
         /* 响应式设计 */
         @media (max-width: 768px) {
             .card {
-                padding: 30px 25px;
+                padding: 40px 30px;
+                border-radius: 24px;
+            }
+            
+            .emoji {
+                font-size: 3.5rem;
+            }
+            
+            h1 {
+                font-size: 2.3rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .header p {
+                max-width: 100%;
+            }
+            
+            .nav {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 12px;
+            }
+            
+            .card {
+                padding: 30px 20px;
+                border-radius: 20px;
             }
             
             .emoji {
@@ -255,32 +411,25 @@
                 font-size: 1.8rem;
             }
             
-            .nav {
-                justify-content: center;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .card {
-                padding: 25px 20px;
-                border-radius: 16px;
-            }
-            
-            .emoji {
-                font-size: 2.5rem;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
             h2 {
                 font-size: 1.2rem;
             }
             
             .nav-item {
-                padding: 10px 16px;
+                padding: 14px 16px;
                 font-size: 14px;
+                border-radius: 14px;
+            }
+            
+            .nav-item i {
+                font-size: 18px;
+            }
+            
+            .theme-toggle {
+                width: 45px;
+                height: 45px;
+                top: 20px;
+                right: 20px;
             }
         }
     </style>
@@ -292,11 +441,14 @@
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
             
+            <div class="decoration decoration-1"></div>
+            <div class="decoration decoration-2"></div>
+            
             <div class="header">
                 <span class="emoji">( ･∀･)ﾉ゛</span>
                 <h1>你好，世界！</h1>
                 <h2>👋 我是 <span class="highlight">LAGSNES✨</span></h2>
-                <p>欢迎来到我的个人空间，这里汇集了我的项目和兴趣爱好。</p>
+                <p>欢迎来到我的个人空间，这里汇集了我的项目和兴趣爱好。探索我的世界，发现更多可能性。</p>
             </div>
             
             <div class="nav-container">
@@ -329,7 +481,7 @@
             </div>
             
             <div class="footer">
-                <p>© 2025 LAGSNES. 原创</p>
+                <p>© 2025 LAGSNES. 保留所有权利</p>
             </div>
         </div>
     </div>
@@ -372,12 +524,27 @@
             
             emoji.addEventListener('mouseover', () => {
                 // 鼠标悬停时添加轻微跳动动画
-                emoji.style.animation = 'gentle-bounce 0.5s ease infinite';
+                emoji.style.animation = 'gentle-bounce 0.8s ease infinite';
             });
             
             emoji.addEventListener('mouseout', () => {
                 // 鼠标离开时停止动画
                 emoji.style.animation = 'none';
+            });
+            
+            // 添加鼠标移动视差效果
+            const card = document.querySelector('.card');
+            
+            document.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+                
+                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+            
+            // 鼠标离开时恢复
+            document.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateY(0deg) rotateX(0deg)';
             });
         });
     </script>
