@@ -39,6 +39,7 @@
             --depth-1: 0 10px 30px rgba(30, 23, 95, 0.07);
             --depth-2: 0 15px 40px rgba(30, 23, 95, 0.1);
             --depth-3: 0 25px 50px rgba(30, 23, 95, 0.12);
+            --avatar-glow: rgba(138, 102, 244, 0.35);
         }
         
         [data-theme="dark"] {
@@ -61,6 +62,7 @@
             --depth-1: 0 10px 30px rgba(5, 5, 15, 0.2);
             --depth-2: 0 15px 40px rgba(5, 5, 15, 0.3);
             --depth-3: 0 25px 50px rgba(5, 5, 15, 0.35);
+            --avatar-glow: rgba(138, 102, 244, 0.25);
         }
         
         /* 全局样式 */
@@ -129,6 +131,11 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
+        @keyframes avatarFloatIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.9) rotate(-10deg); }
+            to { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+        }
+        
         @keyframes gradientBorder {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -161,6 +168,7 @@
             border: 1px solid var(--border);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
+            transform: translateZ(0); /* GPU acceleration hint */
         }
         
         /* 高级彩条效果 */
@@ -204,39 +212,45 @@
             margin-bottom: 45px;
             display: flex;
             flex-direction: column;
+            align-items: center; /* Center align header items */
             gap: 14px;
             position: relative;
             z-index: 2;
             animation: floatIn 1s 0.2s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
         
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px var(--shadow), 0 0 25px var(--avatar-glow);
+            position: relative;
+            animation: avatarFloatIn 1.2s 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .avatar-container:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow-strong), 0 0 35px var(--avatar-glow);
+        }
+        
         .emoji {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15));
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        /* 颜文字的高级动画 */
-        @keyframes gentle-bounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg) scale(1.1); }
-        }
-        
-        /* 闪光文字效果 */
-        @keyframes shine {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        
-        h1 {
             font-size: 3.5rem;
             font-weight: 800;
             letter-spacing: -1.5px;
             margin-bottom: 8px;
             font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
             color: var(--text-primary);
+            text-align: center; /* Center title text */
             position: relative;
             display: inline-block;
             z-index: 2;
@@ -270,6 +284,7 @@
             color: var(--text-secondary);
             max-width: 85%;
             margin-top: 8px;
+            text-align: center; /* Center paragraph text */
         }
         
         /* 高级文字高亮效果 */
@@ -497,6 +512,7 @@
             border-radius: 50%;
             animation: float 20s infinite linear;
             opacity: 0.4;
+            will-change: transform; /* Performance hint for animation */
         }
         
         @keyframes float {
@@ -633,6 +649,9 @@
             </button>
             
             <div class="header">
+                <div class="avatar-container">
+                    <img src="https://lagsn.es/avatar.jpg" alt="LAGSNES Avatar">
+                </div>
                 <span class="emoji">( ･∀･)ﾉ゛</span>
                 <h1>你好，世界！</h1>
                 <h2>👋 我是 <span class="highlight">LAGSNES✨</span></h2>
@@ -740,6 +759,7 @@
             
             // 添加鼠标移动视差效果
             const card = document.querySelector('.card');
+            const avatarContainer = document.querySelector('.avatar-container');
             
             document.addEventListener('mousemove', (e) => {
                 if (window.innerWidth <= 768) return; // 移动设备禁用视差
@@ -753,6 +773,9 @@
                 const yAxis = -(y / (rect.height / 2)) * maxRotation;
                 
                 card.style.transform = `perspective(1000px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                if (avatarContainer) {
+                     avatarContainer.style.transform = `translateZ(30px) rotateY(${xAxis * 0.5}deg) rotateX(${yAxis * 0.5}deg) scale(1.05)`;
+                }
                 
                 // 添加深度效果到卡片内部元素
                 const elements = card.querySelectorAll('.nav-item i, .nav-item span, .highlight, .emoji');
@@ -760,14 +783,16 @@
                     const factor = el.classList.contains('emoji') ? 20 : 
                                    el.classList.contains('highlight') ? 15 : 10;
                     const z = factor * (Math.abs(xAxis) + Math.abs(yAxis)) / (2 * maxRotation);
-                    el.style.transform = `translateZ($
-{z}px)`;
+                    el.style.transform = `translateZ(${z}px)`;
                 });
             });
             
             // 鼠标离开时恢复
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg)`;
+                if (avatarContainer) {
+                    avatarContainer.style.transform = 'translateZ(0) rotateY(0deg) rotateX(0deg) scale(1)';
+                }
                 
                 // 重置内部元素
                 const elements = card.querySelectorAll('.nav-item i, .nav-item span, .highlight, .emoji');
@@ -808,21 +833,14 @@
                 const delay = Math.random() * 5;
                 
                 // 应用样式
-                particle.style.width = `
-${size}px`;
-                particle.style.height = `$
-{size}px`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
                 particle.style.backgroundColor = color;
-                particle.style.left = `
-${left}%`;
-                particle.style.top = `$
-{top}%`;
-                particle.style.opacity = `
-${Math.random() * 0.3 + 0.1}`;
-                particle.style.animationDuration = `$
-{duration}s`;
-                particle.style.animationDelay = `
-${delay}s`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.opacity = `${Math.random() * 0.3 + 0.1}`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
                 
                 particlesContainer.appendChild(particle);
             }
@@ -843,9 +861,9 @@ ${delay}s`;
                 }
                 
                 // 轻微倾斜
-                const xAxis = ((x - rect.width / 2) / rect.width) * 10;
-                const yAxis = ((y - rect.height / 2) / rect.height) * 10;
-                item.style.transform = `perspective(300px) rotateY(${xAxis}deg) rotateX(${-yAxis}deg) scale(1.05)`;
+                const xAxis = ((x - rect.width / 2) / rect.width) * 8; // Reduced tilt
+                const yAxis = ((y - rect.height / 2) / rect.height) * 8; // Reduced tilt
+                item.style.transform = `perspective(300px) rotateY(${xAxis}deg) rotateX(${-yAxis}deg) scale(1.03)`; // Reduced scale
                 
                 // 图标动画
                 const icon = item.querySelector('i');
@@ -858,7 +876,7 @@ ${delay}s`;
                 item.style.transform = '';
                 const icon = item.querySelector('i');
                 if (icon) {
-                    icon.style.transform = '';
+                    icon.style.transform = ''; // Reset icon transform
                 }
             });
         });
